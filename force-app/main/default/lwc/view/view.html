@@ -1,0 +1,69 @@
+<template>
+    <lightning-card title="Account Detail" icon-name="standard:record">
+        <lightning-layout multiple-rows="true" vertical-align="end">
+            <lightning-layout-item size="12" flexibility="grow">
+                <div class="slds-box slds-theme_default">
+                    <template if:true={wireAcccount}>
+                        <template for:each={wireAcccount.data} for:item="acc">
+                            <div key={acc.id}>
+                            <label>Account Name : {acc.Name} </label><br>
+                            <label>Employees Count : {acc.NumberOfEmployees} </label><br>
+                            <label>Type : {acc.Type} </label>
+                            </div>
+                        </template>
+                    </template>
+                    <div class="slds-p-top_x-large slds-align_absolute-center">
+                        <lightning-button label="Edit" icon-name="utility:edit" onclick={openModal}>
+                        </lightning-button>
+                    </div>
+                    <div class="slds-p-top_medium">
+                    <lightning-datatable
+                        data={contactsList}
+                        onrowaction={getSelectedRow}
+                        columns={columns}
+                        key-field="id"
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                    
+                    </div>
+                    <template if:true={isModalOpen}>
+                        <!-- Modal/Popup Box LWC starts here -->
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <!-- Modal/Popup Box LWC header here -->
+                                <header class="slds-modal__header">
+                                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                        <lightning-icon icon-name="utility:close"
+                                            alternative-text="close"
+                                            variant="inverse"
+                                            size="small" ></lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Record</h2>
+                                </header>
+                                <!-- Modal/Popup Box LWC body starts here -->
+                                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                    <template if:true={wireAcccount}>
+                                        <template for:each={wireAcccount.data} for:item="acc">
+                                            <div key={acc.id}>
+                                                <lightning-input label="Account Name :" data-field='Name' onchange={handalNameChange} value={acc.Name} required></lightning-input>
+                                                <lightning-input label="Employees Count :" data-field='NumberOfEmployees' onchange={handalNoOfEmpChange} value={acc.NumberOfEmployees} required></lightning-input>
+                                                <lightning-input label="Type :" data-field='Type' onchange={handalTypeChange} value={acc.Type} required></lightning-input>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                                <!-- Modal/Popup Box LWC footer starts here -->
+                                <footer class="slds-modal__footer ">
+                                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="Save">Save</button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

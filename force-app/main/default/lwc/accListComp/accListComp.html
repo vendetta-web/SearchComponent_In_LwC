@@ -1,0 +1,192 @@
+<template>
+
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-3">
+            <lightning-card title="Account Seach App">
+                <div class="slds-m-around_medium" style="width:200px ;">
+                    <lightning-input type="search" label="Search" placeholder="Account Name" value={searchKey}
+                        onchange={handleKeywordChange}>
+                    </lightning-input>
+
+                    <lightning-combobox name="Sort" label="Sort By Account Name" placeholder="Asc, Desc" value={value}
+                        onchange={handleChange} options={sortOptions}>
+                    </lightning-combobox>
+                </div>
+                <lightning-datatable data={recordsToDisplay} columns={columns} key-field="id"
+                    show-row-number-column="ture" hide-checkbox-column="true" onrowaction={getSelectedRow}>
+                </lightning-datatable>
+
+
+
+                <!-- Pagination Strats From Here -->
+                <!-- Pagination Strats From Here -->
+                <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread"
+                    style="padding-top: 0.5em;">
+                    <!--RECORDS PER PAGE-->
+                    <!-- <div class="slds-col">
+                <div class="slds-list_inline slds-p-bottom_xx-small">
+                    <label class="slds-text-color_weak slds-p-horizontal_x-small" for="recordsPerPage">Page
+                        Size:</label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="recordsPerPage" onchange={handleRecordsPerPage}>
+                            <template for:each={pageSizeOptions} for:item="option">
+                                <option key={option} value={option}>{option}</option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+            </div> -->
+
+                    <!--PAGE NAVIGATION-->
+                    <div class="slds-align_absolute-center" style="height:5rem ">
+                        <lightning-button disabled={bDisableFirst} icon-name="utility:jump_to_left" label="First"
+                            class="slds-p-horizontal_x-small" alternative-text="first page" onclick={firstPage}>
+                        </lightning-button>
+
+                        <lightning-button disabled={bDisableFirst} icon-name="utility:chevronleft" label="Previous"
+                            alternative-text="Previous" onclick={previousPage}></lightning-button>
+                        <!-- &nbsp;
+                <span class="slds-badge">Showing {pageNumber} &nbsp;of&nbsp; {totalPages} &nbsp;&nbsp;Page(s)</span> -->
+                        &nbsp;
+                        <lightning-button disabled={bDisableLast} icon-name="utility:chevronright" label="Next"
+                            alternative-text="Next" onclick={nextPage} class="slds-p-horizontal_x-small"
+                            icon-position="right">
+                        </lightning-button>
+
+                        <lightning-button disabled={bDisableLast} icon-name="utility:jump_to_right" label="Last"
+                            alternative-text="last page" onclick={lastPage} icon-position="right"></lightning-button>
+                    </div>
+
+                    <!--TOTAL RECORDS-->
+                    <!-- <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <span class="slds-badge"> Total Records: {totalRecords}</span>
+                </div>
+            </div> -->
+                </div>
+                <!-- Pagination Ends Here -->
+                <!-- Pagination Ends Here -->
+            </lightning-card>
+        </div>
+        <div class="slds-col slds-size_1-of-3">
+            <template if:true={showDetails}>
+                <lightning-card title="Account Details">
+                    <div class="slds-m-around_medium">
+                        <template for:each={accountDetails} for:item="acc">
+                            <div key={acc.Id}>
+                                <label>Account Name : {acc.Name}</label><br>
+                                <label>Account No. : {acc.AccountNumber}</label><br>
+                                <label>Employee Count : {acc.NumberOfEmployees}</label><br>
+                                <label>Account Type : {acc.Type}</label>
+                            </div>
+                        </template>
+                        <lightning-button class="slds-p-top_x-large slds-align_absolute-center" icon-name="utility:edit"
+                            label="Edit" onclick={showModal}></lightning-button>
+                    </div>
+                    <!-- Modal Pop Up For Account Details Edit Action -->
+                    <!-- Modal Pop Up For Account Details Edit Action -->
+                    <template if:true={isModalOpen}>
+                        <!-- Modal/Popup Box LWC starts here -->
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <!-- Modal/Popup Box LWC header here -->
+                                <header class="slds-modal__header">
+                                    <button
+                                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title="Close" onclick={closeModal}>
+                                        <lightning-icon icon-name="utility:close" alternative-text="close"
+                                            variant="inverse" size="small"></lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit
+                                        Record</h2>
+                                </header>
+                                <!-- Modal/Popup Box LWC body starts here (For Account Details Edit) -->
+                                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                                    <template if:true={accountDetails}>
+                                        <template for:each={accountDetails} for:item="acc">
+                                            <div key={acc.id}>
+                                                Account Name : <lightning-input name="name" value={acc.Name}>
+                                                </lightning-input>
+                                                Employees Count :<lightning-input name="count"
+                                                    value={acc.NumberOfEmployees}></lightning-input>
+                                                Type :<lightning-input name="type" value={acc.Type}></lightning-input>
+                                                Account No. :<lightning-input name="number" value={acc.AccountNumber}>
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                                <!-- Modal/Popup Box LWC footer starts here -->
+                                <footer class="slds-modal__footer ">
+                                    <button class="slds-button slds-button_neutral" onclick={closeModal}
+                                        title="Cancel">Cancel</button>
+                                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="Save"
+                                        onsuccess={showSuccessToast}>Save</button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+
+                </lightning-card>
+                <lightning-card title="Related Contact">
+                    <lightning-datatable data={recordsCon} columns={columns1} key-field="id"
+                        show-row-number-column="ture" hide-checkbox-column="true" onrowaction={getContacts}>
+                    </lightning-datatable>
+                    <!-- Modal Pop Up For Contact Details Edit Action -->
+                    <!-- Modal Pop Up For Contact Details Edit Action -->
+                    <template if:true={isModal}>
+                        <!-- Modal/Popup Box LWC starts here -->
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <!-- Modal/Popup Box LWC header here -->
+                                <header class="slds-modal__header">
+                                    <button
+                                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title="Close" onclick={closeBox}>
+                                        <lightning-icon icon-name="utility:close" alternative-text="close"
+                                            variant="inverse" size="small"></lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Edit
+                                        Record</h2>
+                                </header>
+                                <!-- Modal/Popup Box LWC body starts here (For Account Details Edit) -->
+                                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-2">
+                                    <template if:true={conDetails}>
+                                        <template for:each={conDetails} for:item="con">
+                                            <div key={con.id}>
+                                                First Name : <lightning-input name="fname" value={con.FirstName}>
+                                                </lightning-input>
+                                                Last Name : <lightning-input name="lname" value={con.LastName}>
+                                                </lightning-input>
+                                                Email :<lightning-input name="email" value={con.Email}>
+                                                </lightning-input>
+                                                Phone :<lightning-input name="phone" value={con.Phone}>
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                                <!-- Modal/Popup Box LWC footer starts here -->
+                                <footer class="slds-modal__footer ">
+                                    <button class="slds-button slds-button_neutral" onclick={closeBox}
+                                        title="Cancel">Cancel</button>
+                                    <button class="slds-button slds-button_brand" onclick={submitContact}
+                                        title="Save">Save</button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+
+                </lightning-card>
+            </template>
+
+        </div>
+    </div>
+
+</template>
