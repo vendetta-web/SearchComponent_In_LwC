@@ -1,9 +1,6 @@
-import { LightningElement, wire, api } from 'lwc';
-import getAccountList from '@salesforce/apex/DataController.getAccountList'
-export default class PaginationDemo extends LightningElement {
+import { LightningElement, api } from 'lwc';
 
-    totalAccounts
-    visibleAccounts
+export default class Pagination extends LightningElement {
     currentPage = 1
     totalRecords
     @api recordSize = 5
@@ -60,21 +57,5 @@ export default class PaginationDemo extends LightningElement {
                 records:this.visibleRecords
             }
         }))
-    }
-
-    @wire(getAccountList)
-    wiredaccount({error, data}){
-        if(data){ 
-            this.totalAccounts = data
-            console.log(this.totalAccounts)
-        }
-        if(error){
-            console.error(error)
-        }
-    }
-
-    updateAccountHandler(event){
-        this.visibleAccounts=[...event.detail.records]
-        console.log(event.detail.records)
     }
 }

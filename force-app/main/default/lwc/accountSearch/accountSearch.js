@@ -9,9 +9,12 @@ export default class AccountSearch extends LightningElement {
     @track showViewComponent = false;
     @track sortBy;
     @track sortDirection;
+    @track AccountId;
+    @track AccId;
     totalAccounts
     visibleAccounts
    @track columns = [];
+   @track updateKey
    
    get options() {
     return [
@@ -80,9 +83,7 @@ export default class AccountSearch extends LightningElement {
         const recId =  event.detail.row.Id;
         this.recrdsID =  recId
         const actionName = event.detail.action.name;
-        console.log(recId)
-        console.log(actionName)  
+
       }
-      
 
 }
